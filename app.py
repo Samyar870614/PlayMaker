@@ -34,9 +34,6 @@ SPORTS = [
 ]
 
 
-# -------------------------
-# DATABASE
-# -------------------------
 
 def connect_db():
     db = sqlite3.connect(DB_PATH)
@@ -83,7 +80,6 @@ def init_db():
             )
         """)
 
-        # Add example activities if the database is empty.
         count = db.execute(
             "SELECT COUNT(*) FROM activities"
         ).fetchone()[0]
@@ -130,8 +126,6 @@ def init_db():
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, examples)
 
-        # Remove creators from the stored participant list.
-        # The creator will be counted separately in get_activity().
         db.execute("""
             DELETE FROM participants
             WHERE EXISTS (
@@ -169,7 +163,6 @@ def get_activity(db, activity_id):
     if activity is None:
         return None
 
-    # Get actual participants from the database.
     participants = db.execute("""
         SELECT username
         FROM participants
@@ -179,22 +172,17 @@ def get_activity(db, activity_id):
 
     data = dict(activity)
 
-    # Exclude the creator from the stored participant list
-    # to prevent counting them twice.
     joined_participants = [
         participant["username"]
         for participant in participants
         if participant["username"] != data["creator"]
     ]
 
-    # Display the creator as a participant without storing
-    # them in the participants table.
     data["participants"] = [
         data["creator"],
         *joined_participants
     ]
 
-    # The creator occupies one place in the activity capacity.
     data["joined_count"] = len(data["participants"])
 
     data["available"] = max(
@@ -202,8 +190,6 @@ def get_activity(db, activity_id):
         data["max_players"] - data["joined_count"]
     )
 
-    # Only actual participants are considered to have joined.
-    # The creator is handled separately in the templates and routes.
     data["joined_by_me"] = (
         current_user() in joined_participants
     )
@@ -237,15 +223,11 @@ def get_favorite_sports(username):
     return [row["sport"] for row in rows]
 
 
-# -------------------------
-# HOME
-# -------------------------
 
 @app.route("/")
 def home():
     activities = all_activities()
 
-    # Hide activities created by the current user from the home page.
     activities = [
         activity for activity in activities
         if activity["creator"] != current_user()
@@ -254,14 +236,12 @@ def home():
     sport = request.args.get("sport", "").strip()
     search = request.args.get("q", "").strip().lower()
 
-    # Filter activities by the selected sport.
     if sport and sport != "All sports":
         activities = [
             activity for activity in activities
             if activity["sport"] == sport
         ]
 
-    # Search by activity title, sport, or location.
     if search:
         activities = [
             activity for activity in activities
@@ -282,9 +262,6 @@ def home():
     )
 
 
-# -------------------------
-# ACTIVITY DETAILS
-# -------------------------
 
 @app.route("/activities/<int:activity_id>")
 def activity_detail(activity_id):
@@ -301,9 +278,6 @@ def activity_detail(activity_id):
     )
 
 
-# -------------------------
-# CREATE ACTIVITY
-# -------------------------
 
 @app.route("/activities/create", methods=["GET", "POST"])
 def create_activity():
@@ -387,9 +361,6 @@ def create_activity():
 
             activity_id = cursor.lastrowid
 
-            # Do not insert the creator into participants.
-            # get_activity() includes the creator in the displayed
-            # participant count without storing them as a joiner.
 
         flash("Your activity has been created.")
 
@@ -407,9 +378,6 @@ def create_activity():
     )
 
 
-# -------------------------
-# JOIN ACTIVITY
-# -------------------------
 
 @app.route(
     "/activities/<int:activity_id>/join",
@@ -423,7 +391,6 @@ def join_activity(activity_id):
             flash("That activity could not be found.")
             return redirect(url_for("home"))
 
-        # A creator cannot join their own activity as a participant.
         if activity["creator"] == current_user():
             flash("You created this activity.")
 
@@ -465,9 +432,6 @@ def join_activity(activity_id):
     )
 
 
-# -------------------------
-# LEAVE ACTIVITY
-# -------------------------
 
 @app.route(
     "/activities/<int:activity_id>/leave",
@@ -502,9 +466,6 @@ def leave_activity(activity_id):
     return redirect(url_for("my_activities"))
 
 
-# -------------------------
-# DELETE YOUR OWN ACTIVITY
-# -------------------------
 
 @app.route(
     "/activities/<int:activity_id>/delete",
@@ -522,7 +483,6 @@ def delete_activity(activity_id):
             flash("That activity could not be found.")
             return redirect(url_for("my_activities"))
 
-        # Only the creator can delete the activity.
         if activity["creator"] != current_user():
             abort(403)
 
@@ -543,9 +503,6 @@ def delete_activity(activity_id):
     )
 
 
-# -------------------------
-# JOIN CONFIRMATION
-# -------------------------
 
 @app.route("/joined/<int:activity_id>")
 def joined(activity_id):
@@ -562,24 +519,18 @@ def joined(activity_id):
     )
 
 
-# -------------------------
-# MY ACTIVITIES
-# -------------------------
 
 @app.route("/my-activities")
 def my_activities():
     activities = all_activities()
     username = current_user()
 
-    # Only activities created by other users that this user joined.
-    # The creator is never included in Joined Activities.
     joined_activities = [
         activity for activity in activities
         if activity["creator"] != username
         and username in activity["participants"]
     ]
 
-    # Activities created by this user.
     created_activities = [
         activity for activity in activities
         if activity["creator"] == username
@@ -602,17 +553,12 @@ def my_activities():
     )
 
 
-# -------------------------
-# PROFILE
-# -------------------------
 
 @app.route("/profile")
 def profile():
     activities = all_activities()
     username = current_user()
 
-    # Count only activities the user joined as a participant.
-    # Activities created by the user do not increase this number.
     joined_count = sum(
         activity["creator"] != username
         and username in activity["participants"]
@@ -634,9 +580,6 @@ def profile():
     )
 
 
-# -------------------------
-# EDIT PROFILE
-# -------------------------
 
 @app.route("/profile/edit", methods=["GET", "POST"])
 def edit_profile():
@@ -665,14 +608,12 @@ def edit_profile():
         new_username = new_username[:30]
 
         with connect_db() as db:
-            # Update the creator name on activities owned by this user.
             db.execute("""
                 UPDATE activities
                 SET creator = ?
                 WHERE creator = ?
             """, (new_username, old_username))
 
-            # Get only actual saved participations.
             old_participations = db.execute("""
                 SELECT activity_id
                 FROM participants
@@ -688,8 +629,6 @@ def edit_profile():
                     WHERE id = ?
                 """, (activity_id,)).fetchone()
 
-                # Never register the user as a participant
-                # in an activity they created.
                 if creator and creator["creator"] == new_username:
                     continue
 
@@ -699,13 +638,11 @@ def edit_profile():
                     VALUES (?, ?)
                 """, (activity_id, new_username))
 
-            # Remove the old username from participant records.
             db.execute("""
                 DELETE FROM participants
                 WHERE username = ?
             """, (old_username,))
 
-            # Replace favourite sports with the selected list.
             db.execute("""
                 DELETE FROM favorite_sports
                 WHERE username = ?
@@ -720,8 +657,6 @@ def edit_profile():
                 for sport in selected_sports
             ])
 
-            # Ensure the renamed creator is not stored as
-            # a participant in any activity they own.
             db.execute("""
                 DELETE FROM participants
                 WHERE username = ?
