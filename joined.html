@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Activity Joined | PlayMaker{% endblock %}
+
+{% block content %}
+<main class="success-page">
+    <section class="success-card">
+        <div class="success-icon">✓</div>
+
+        <h1>Activity Joined!</h1>
+
+        <p>
+            You Have Joined the <strong>{{ activity.title }}</strong> Activity.
+        </p>
+
+        <div class="success-details">
+            <span>{{ activity.sport }}</span>
+            <span>{{ activity.activity_date }} · {{ activity.activity_time }}</span>
+            <span>{{ activity.location }}</span>
+        </div>
+
+        <div class="success-actions">
+            <a class="button neon"
+               href="{{ url_for('activity_detail', activity_id=activity.id) }}">
+                View Activity
+            </a>
+
+            <a class="button outline" href="{{ url_for('home') }}">
+                Home
+            </a>
+        </div>
+    </section>
+</main>
+{% endblock %}

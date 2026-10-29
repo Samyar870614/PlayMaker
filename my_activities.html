@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}My Activities | PlayMaker{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div>
+        <h1>My Activities</h1>
+        <p>Your games, your people. Everything you need before you play.</p>
+    </div>
+</section>
+
+<main class="page-shell my-page">
+    <div class="tabs">
+        <a class="tab {{ 'active' if tab == 'joined' else '' }}"
+           href="{{ url_for('my_activities', tab='joined') }}">
+            Joined Activities <span>{{ joined_count }}</span>
+        </a>
+
+        <a class="tab {{ 'active' if tab == 'created' else '' }}"
+           href="{{ url_for('my_activities', tab='created') }}">
+            Created Activities <span>{{ created_count }}</span>
+        </a>
+    </div>
+
+    {% if activities %}
+        <div class="activity-grid">
+            {% for activity in activities %}
+                <article class="activity-card">
+                    <div class="card-top">
+                        <span class="sport-tag">{{ activity.sport }}</span>
+
+                        <span class="availability {{
+                            'full' if activity.available == 0 else ''
+                        }}">
+                            {{
+                                'Full'
+                                if activity.available == 0
+                                else 'Open · ' ~ activity.available ~ ' spots'
+                            }}
+                        </span>
+                    </div>
+
+                    <h3>{{ activity.title }}</h3>
+
+                    <p class="card-organiser">
+                        Hosted by {{ activity.creator }}
+                    </p>
+
+                    <ul class="meta-list">
+                        <li><span>▦</span>{{ activity.activity_date }}</li>
+                        <li><span>◷</span>{{ activity.activity_time }}</li>
+                        <li><span>⌖</span>{{ activity.location }}</li>
+                    </ul>
+
+                    <div class="capacity">
+                        <div class="capacity-label">
+                            <span>
+                                {{ activity.joined_count }}
+                                of {{ activity.max_players }} players
+                            </span>
+
+                            <span>
+                                {{
+                                    (activity.joined_count /
+                                    activity.max_players * 100)|int
+                                }}%
+                            </span>
+                        </div>
+
+                        <div class="bar">
+                            <progress value="{{ activity.joined_count }}"
+                                      max="{{ activity.max_players }}"
+                                      aria-label="Activity capacity"></progress>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        <a class="button dark small"
+                           href="{{ url_for(
+                               'activity_detail',
+                               activity_id=activity.id
+                           ) }}">
+                            View Details
+                        </a>
+
+                        {% if tab == 'created' %}
+                            <form method="post"
+                                  action="{{ url_for(
+                                      'delete_activity',
+                                      activity_id=activity.id
+                                  ) }}"
+                                  class="delete-form"
+                                  data-confirm-delete="{{ activity.title }}">
+                                <button type="submit"
+                                        class="button danger small">
+                                    Delete
+                                </button>
+                            </form>
+                        {% else %}
+                            {% if activity.creator != current_user %}
+                                <form method="post"
+                                      action="{{ url_for(
+                                          'leave_activity',
+                                          activity_id=activity.id
+                                      ) }}"
+                                      data-confirm-leave="{{ activity.title }}">
+                                    <button type="submit"
+                                            class="round-arrow"
+                                            title="Leave activity"
+                                            aria-label="Leave activity">
+                                        ×
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            {% if tab == 'created' %}
+                <h3>You Haven't Created Any Activities Yet</h3>
+                <p>Create an activity and invite people to join you.</p>
+
+                <a class="button neon"
+                   href="{{ url_for('create_activity') }}">
+                    Create Activity +
+                </a>
+            {% else %}
+                <h3>You Haven't Joined Any Activities Yet</h3>
+                <p>Explore available activities and find your next match.</p>
+
+                <a class="button neon" href="{{ url_for('home') }}">
+                    Find Activities
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

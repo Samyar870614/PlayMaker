@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile | PlayMaker{% endblock %}
+
+{% block content %}
+<div class="back-row">
+    <a href="{{ url_for('profile') }}">← Back to Profile</a>
+</div>
+
+<section class="page-banner">
+    <h1>Edit Profile</h1>
+    <p>Personalise your profile and choose the sports you enjoy.</p>
+</section>
+
+<main class="edit-profile-page">
+    <form class="edit-profile-form" method="post">
+        <section class="panel edit-section">
+            <h2>Personal Information</h2>
+
+            <label class="form-label" for="username">
+                Display Name
+            </label>
+
+            <input
+                class="form-control"
+                type="text"
+                id="username"
+                name="username"
+                value="{{ username }}"
+                maxlength="30"
+                required
+            >
+
+            <p class="muted">
+                This name will be displayed on your profile and activities.
+            </p>
+        </section>
+
+        <section class="panel edit-section">
+            <div class="edit-sports-heading">
+                <div>
+                    <h2>Favourite Sports</h2>
+                    <p class="muted">
+                        Select all the sports you are interested in.
+                    </p>
+                </div>
+
+                <span class="selected-count" id="selected-count">
+                    {{ favorite_sports|length }} selected
+                </span>
+            </div>
+
+            <div class="sports-options">
+                {% for sport in available_sports %}
+                    <label class="sport-option">
+                        <input
+                            type="checkbox"
+                            name="sports"
+                            value="{{ sport }}"
+                            {% if sport in favorite_sports %}checked{% endif %}
+                        >
+
+                        <span class="sport-checkbox"></span>
+                        <span class="sport-option-name">{{ sport }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+
+            <p class="muted sports-help">
+                To remove a sport, simply untick it.
+            </p>
+        </section>
+
+        <div class="edit-profile-actions">
+            <a class="button outline"
+               href="{{ url_for('profile') }}">
+                Cancel
+            </a>
+
+            <button class="button neon" type="submit">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</main>
+{% endblock %}

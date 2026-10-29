@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}PlayMaker{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"
+            defer></script>
+</head>
+
+<body>
+    <header class="navbar">
+        <a class="brand" href="{{ url_for('home') }}">
+    <span class="brand-mark">
+        <img
+            src="https://1drv.ms/i/c/C1446A5306693B0D/IQQietWsVN3UTrqBAp0bFftqAVboAZ4C8c0SsLng9toxE2c?width=1254&amp;height=1254"
+            alt="PlayMaker logo"
+            class="brand-logo"
+        >
+    </span>
+
+    <span>PLAYMAKER</span>
+</a>
+
+        <nav>
+            <a class="{{ 'active' if request.endpoint == 'home' else '' }}"
+               href="{{ url_for('home') }}">Home</a>
+
+            <a class="{{ 'active' if request.endpoint == 'my_activities' else '' }}"
+               href="{{ url_for('my_activities') }}">My Activities</a>
+        </nav>
+
+        <a class="avatar"
+           href="{{ url_for('profile') }}"
+           aria-label="Open profile">
+            {{ user_initials }}
+        </a>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-wrap">
+                {% for message in messages %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        PLAYMAKER <span>•</span> Find your people. Play together.
+    </footer>
+</body>
+</html>

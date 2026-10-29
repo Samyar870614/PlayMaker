@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | PlayMaker{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div>
+        <h1>My Profile</h1>
+        <p>Your sports, your activities, your place in the team.</p>
+    </div>
+</section>
+
+<main class="profile-layout">
+    <section class="profile-card panel">
+        <div class="profile-avatar">
+            {{ current_user[0:2].upper() }}
+        </div>
+
+        <p class="tiny-label">PLAYER PROFILE</p>
+        <h2>{{ current_user }}</h2>
+    </section>
+
+    <div class="profile-main">
+        <section class="panel sports-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>My Favourite Sports</h2>
+                    <p class="muted">
+                        The sports you enjoy playing
+                    </p>
+                </div>
+            </div>
+
+            <div class="sport-chips">
+                {% for sport in favorite_sports %}
+                    <span>{{ sport }}</span>
+                {% else %}
+                    <p class="muted">
+                        You Haven't Selected Your Favourite Sports Yet.
+                    </p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="stats-grid">
+            <section class="panel stat-card">
+                <p>Activities Joined</p>
+                <strong>{{ joined_count }}</strong>
+                <span>♧</span>
+            </section>
+
+            <section class="panel stat-card">
+                <p>Activities Created</p>
+                <strong>{{ created_count }}</strong>
+                <span>▦</span>
+            </section>
+        </div>
+    </div>
+
+    <div class="profile-edit-button-wrap">
+        <a class="button neon profile-edit-button"
+           href="{{ url_for('edit_profile') }}">
+            Edit Profile
+        </a>
+    </div>
+</main>
+{% endblock %}

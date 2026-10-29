@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Create activity | PlayMaker{% endblock %}
+
+{% block content %}
+<div class="back-row">
+    <a href="{{ url_for('home') }}">← Back</a>
+</div>
+
+<section class="page-banner create-banner">
+    <h1>Create a New Sports Activity</h1>
+    <p>Choose your sport, set the details, and bring players together.</p>
+</section>
+
+<main class="form-shell">
+    <form class="activity-form" method="post">
+        <div class="form-heading">
+            <h2>Activity Details</h2>
+            <span>All fields marked * are required</span>
+        </div>
+
+        <label>
+            Sport *
+            <select name="sport" required>
+                <option value="">Select a Sport</option>
+
+                {% for sport in [
+                    'Football', 'Running', 'Tennis', 'Basketball',
+                    'Volleyball', 'Cycling', 'Badminton', 'Other'
+                ] %}
+                    <option value="{{ sport }}"
+                        {{ 'selected' if form.get('sport') == sport else '' }}>
+                        {{ sport }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>
+            Activity title *
+            <input name="title"
+                   value="{{ form.get('title', '') }}"
+                   placeholder="e.g. Casual football match"
+                   required>
+        </label>
+
+        <div class="form-row">
+            <label>
+                Date *
+                <input type="date"
+                       name="activity_date"
+                       value="{{ form.get('activity_date', '') }}"
+                       min="{{ today }}"
+                       required>
+            </label>
+
+            <label>
+                Time *
+                <input type="time"
+                       name="activity_time"
+                       value="{{ form.get('activity_time', '') }}"
+                       required>
+            </label>
+        </div>
+
+        <label>
+            Location *
+            <input name="location"
+                   value="{{ form.get('location', '') }}"
+                   placeholder="Enter an address for the activity"
+                   required>
+        </label>
+
+        <label>
+            Number of players *
+            <input type="number"
+                   name="max_players"
+                   min="2"
+                   max="100"
+                   value="{{ form.get('max_players', '6') }}"
+                   required>
+        </label>
+
+        <label>
+            Description
+            <textarea name="description"
+                      rows="4"
+                      placeholder="Tell players about your activity, the skill level, and what to bring.">{{ form.get('description', '') }}</textarea>
+        </label>
+
+        <button class="button neon submit-button" type="submit">
+            Create Activity <span>＋</span>
+        </button>
+    </form>
+</main>
+{% endblock %}

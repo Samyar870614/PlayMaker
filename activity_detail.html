@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}{{ activity.title }} | PlayMaker{% endblock %}
+
+{% block content %}
+<div class="back-row">
+    <a href="{{ url_for('home') }}">← Back</a>
+</div>
+
+<section class="detail-banner">
+    <p class="eyebrow light">ACTIVITY DETAILS</p>
+
+    <span class="sport-tag pale">{{ activity.sport }}</span>
+
+    <h1>{{ activity.title }}</h1>
+
+    <div class="detail-meta">
+        <div>
+            <small>DATE</small>
+            <strong>{{ activity.activity_date }}</strong>
+        </div>
+
+        <div>
+            <small>TIME</small>
+            <strong>{{ activity.activity_time }}</strong>
+        </div>
+
+        <div>
+            <small>LOCATION</small>
+            <strong>{{ activity.location }}</strong>
+        </div>
+
+        <div>
+            <small>NUMBER OF PLAYERS</small>
+            <strong>
+                {{ activity.joined_count }} / {{ activity.max_players }}
+            </strong>
+        </div>
+    </div>
+</section>
+
+<main class="detail-layout">
+    <section class="panel participants-panel">
+        <h2>
+            Participants
+            <span class="count-pill">{{ activity.joined_count }}</span>
+        </h2>
+
+        {% if activity.participants %}
+            {% for participant in activity.participants %}
+                <div class="participant">
+                    <span class="participant-avatar">
+                        {{ participant[0:1].upper() }}
+                    </span>
+
+                    <span>
+                        {{ participant }}
+                        {% if participant == activity.creator %}
+                            <small> · organiser</small>
+                        {% endif %}
+                    </span>
+
+                    <span class="participant-check">✓</span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="muted">No one has joined yet.</p>
+        {% endif %}
+    </section>
+
+    <section class="panel description-panel">
+        <h2>Description</h2>
+
+        <p>
+            {{ activity.description or
+            'No description has been added for this activity yet.' }}
+        </p>
+
+        <div class="organiser-note">
+            Organised by <strong>{{ activity.creator }}</strong>
+        </div>
+    </section>
+
+    <div class="detail-cta">
+        {% if activity.creator == current_user %}
+            <a class="button neon"
+               href="{{ url_for('my_activities', tab='created') }}">
+                Manage My Activities
+            </a>
+
+        {% elif activity.joined_by_me %}
+            <a class="button dark"
+               href="{{ url_for('my_activities') }}">
+                Already Joined · My Activities
+            </a>
+
+        {% elif activity.available > 0 %}
+            <form method="post"
+                  action="{{ url_for('join_activity', activity_id=activity.id) }}">
+                <button class="button neon" type="submit">
+                    Join Activity
+                </button>
+            </form>
+
+        {% else %}
+            <button class="button disabled" disabled>
+                Activity is Full.
+            </button>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
