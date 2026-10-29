@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Update the selected favourite sports counter.
     const sportCheckboxes = document.querySelectorAll(
         'input[name="sports"]'
     );
@@ -24,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateSelectedCount();
 
-    // Confirm before deleting an activity.
     const deleteForms = document.querySelectorAll(
         "[data-confirm-delete]"
     );
@@ -44,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Confirm before leaving an activity.
     const leaveForms = document.querySelectorAll(
         "[data-confirm-leave]"
     );
