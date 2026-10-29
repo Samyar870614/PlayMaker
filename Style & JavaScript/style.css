@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-
 :root {
     --navy: #06304b;
     --navy2: #092b3e;
@@ -53,8 +52,6 @@ button, a, input, select, textarea {
     position: relative;
 }
 
-/* Smaller logo in secondary headers */
-
 .mini-brand .brand-mark {
     width: 36px;
     height: 36px;
@@ -80,10 +77,8 @@ button, a, input, select, textarea {
     display: grid;
     place-items: center;
     flex-shrink: 0;
-
     width: 52px;
     height: 52px;
-
     background: var(--green);
     border-radius: 10px;
     overflow: hidden;
@@ -135,7 +130,7 @@ button, a, input, select, textarea {
     background: var(--navy);
     color: #fff;
     font-weight: 800;
-    font-size: 18px;
+    font-size: clamp(14px, 1.5vw, 18px);
 }
 
 .search-hero {
@@ -173,10 +168,6 @@ button, a, input, select, textarea {
     letter-spacing: -.7px;
 }
 
-/* =========================
-   PLAYMAKER ABSTRACT HERO VISUAL
-========================= */
-
 .hero-visual {
     position: absolute;
     top: 50%;
@@ -187,8 +178,6 @@ button, a, input, select, textarea {
     pointer-events: none;
     z-index: 0;
 }
-
-/* Orbit rings */
 
 .hero-orbit {
     position: absolute;
@@ -213,8 +202,6 @@ button, a, input, select, textarea {
     transform: rotate(30deg);
 }
 
-/* Main neon shape */
-
 .hero-core {
     position: absolute;
     top: 26px;
@@ -237,8 +224,6 @@ button, a, input, select, textarea {
     animation: hero-float 5s ease-in-out infinite;
 }
 
-/* Inner circular detail */
-
 .core-ring {
     width: 53px;
     height: 53px;
@@ -257,8 +242,6 @@ button, a, input, select, textarea {
     background: var(--navy);
     box-shadow: 0 0 0 5px rgba(6, 48, 75, 0.08);
 }
-
-/* Floating geometric satellites */
 
 .hero-satellite {
     position: absolute;
@@ -294,8 +277,6 @@ button, a, input, select, textarea {
     border-radius: 50%;
 }
 
-/* Tiny dotted detail */
-
 .hero-dot-grid {
     position: absolute;
     top: 45px;
@@ -310,8 +291,6 @@ button, a, input, select, textarea {
     opacity: 0.65;
 }
 
-/* Small diamond */
-
 .hero-diamond {
     position: absolute;
     top: 5px;
@@ -323,8 +302,6 @@ button, a, input, select, textarea {
     transform: rotate(45deg);
 }
 
-/* Gentle floating animation */
-
 @keyframes hero-float {
     0%,
     100% {
@@ -335,8 +312,6 @@ button, a, input, select, textarea {
         transform: translateY(-7px) rotate(-9deg);
     }
 }
-
-/* Responsive layout */
 
 @media (max-width: 760px) {
     .hero-visual {
@@ -362,10 +337,6 @@ button, a, input, select, textarea {
         width: 100%;
     }
 }
-
-/* =========================
-   MOBILE SEARCH HERO LAYOUT
-========================= */
 
 @media (max-width: 760px) {
     .search-hero {
@@ -424,21 +395,15 @@ button, a, input, select, textarea {
         right: 5%;
         bottom: auto;
         left: auto;
-
         width: 190px;
         height: 140px;
-
         transform: translateY(-50%) scale(0.68);
         transform-origin: center right;
-
         opacity: 1;
         z-index: 1;
         pointer-events: none;
     }
 }
-
-
-/* Smaller phones */
 
 @media (max-width: 480px) {
     .search-hero {
@@ -555,8 +520,6 @@ h2 {
     font-weight: 700;
 }
 
-/* Sport filter dropdown */
-
 .sport-filter-form {
     display: flex;
     align-items: center;
@@ -585,16 +548,12 @@ h2 {
     font-weight: 700;
     cursor: pointer;
     outline: none;
-
-    /* Custom dropdown arrow */
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23153d36' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 18px center;
-
     transition: background-color 0.3s ease,
             color 0.3s ease,
             border-color 0.3s ease,
@@ -608,8 +567,6 @@ h2 {
     border-color: #143b3d;
     box-shadow: 0 4px 12px rgba(21, 61, 54, 0.18);
     transform: translateY(-2px);
-
-    /* Change the arrow to neon green */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
@@ -1455,6 +1412,7 @@ h2 {
     .avatar {
         width: 29px;
         height: 29px;
+        font-size: clamp(10px, 2.5vw, 12px);
     }
 
     .search-hero {
@@ -1610,10 +1568,6 @@ h2 {
         font-size: 9px;
     }
 }
-
-/* =========================
-   PROFILE EDITING
-========================= */
 
 .profile-edit-prompt {
     display: flex;
@@ -1777,10 +1731,6 @@ h2 {
     gap: 10px;
 }
 
-/* =========================
-   DELETE ACTIVITY
-========================= */
-
 .button.danger {
     background: #fff0ec;
     border: 1px solid #f4d5cc;
@@ -1798,10 +1748,6 @@ h2 {
 .delete-form .button {
     height: 31px;
 }
-
-/* =========================
-   RESPONSIVE
-========================= */
 
 @media (max-width: 600px) {
     .profile-edit-prompt {
