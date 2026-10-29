@@ -1498,6 +1498,12 @@ h2 {
         height: 19px;
     }
 
+    .brand-mark .brand-logo {
+        width: 55%;
+        height: 55%;
+        transform: scale(1);
+    }
+
     .activity-grid {
         grid-template-columns: 1fr;
     }
