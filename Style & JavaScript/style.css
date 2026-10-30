@@ -1366,7 +1366,6 @@ h2 {
 }
 
 .flash-wrap {
-    max-width: 1100px;
     margin: 12px 12px;
     padding: 0 20px;
 }
@@ -1378,6 +1377,7 @@ h2 {
     border-radius: 8px;
     color: #ffffff;
     font-size: 11px;
+    text-align: center;
 }
 
 .footer {
